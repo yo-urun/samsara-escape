@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "version": "0.2",
+    "date": "2026-10-10",
+    "based_on": "concept v0.1",
+    "gdd": "GDD.md",
+    "language": "en keys / en-ru values"
+  },
+  "project": {
+    "title_concept": "Samsara Escape (Колесо Сансары)",
+    "genre": ["Roguelike", "Text Quest", "Resource Management"],
+    "platform": "Browser",
+    "core_setting": "Ancient North India / Magadha era (Syncretic Buddhist & Hindu Aesthetics)",
+    "elevator_pitch": "The wheel turns by itself; your only window out is a single human life. Reincarnate by karma, live card-driven lives, face the bardo, and try to break the 12 links of dependent origination in one lifetime."
+  },
+  "design_pillars": [
+    "The wheel is a system: rules are deduced through lived lives; knowledge is meta-progression",
+    "Suffering is the only source of wisdom: dukkha generates prajna, comfort generates only punya",
+    "Motivation outweighs action: same deed from craving/aversion/delusion yields different karmic traces",
+    "Nothing fully disappears: death wipes resources, not samskaras and not prajna",
+    "Honest trap: every hidden mechanic signals itself in advance"
+  ],
+  "core_loop": {
+    "macro": ["Birth (realm by karma)", "Life (act-by-act events, decisions, allocation)", "Death", "Bardo (mind projections)", "Rebirth or Liberation"],
+    "life_phases": [
+      { "phase": "childhood", "acts": [3, 4], "note": "partly determined by karma and parents' Karma Score" },
+      { "phase": "youth", "acts": [3, 4], "note": "life paths unlock (family / wanderer / merchant / ascetic...)" },
+      { "phase": "maturity", "acts": [4, 5], "note": "resource allocation; main punya/papa deals; key nidana events" },
+      { "phase": "old_age", "acts": [2, 3], "note": "reflection (+1 prajna if prajna >= 10), preparation for death" }
+    ],
+    "acts_per_life": [12, 16],
+    "act_structure": "2-4 options; each option = action + intention (two-step choice)",
+    "session": { "minutes_per_life": [8, 12], "lives_per_session": [1, 3] }
+  },
+  "primary_resources": {
+    "punya": "Good karma: improves next-birth conditions, but risks the Deva Realm Trap",
+    "papa": "Bad karma: drags to lower realms, offers quick short-term tactical advantages",
+    "prajna": "Wisdom/awareness: persistent across deaths; required for Nirvana; cannot be bought",
+    "local_per_life": {
+      "vitala": "vitality / lifespan",
+      "artha": "wealth",
+      "yasas": "status / influence"
+    }
+  },
+  "key_mechanics": {
+    "trap_of_good_karma": {
+      "summary": "High punya leads to the Deva Realm; no suffering means no prajna; eventual fall to lower realms",
+      "details": "In Deva realm punya is spent on existence itself (-1 per 2 acts); prajna decays (-1 per 6 acts); at punya < 8 the 'Five Signs' herald the fall",
+      "honest_signals": ["Five Signs omens", "inner whisper", "aeons-wasted counter after the fall"]
+    },
+    "twelve_nidanas": {
+      "chain": ["avidya", "samskara", "vijnana", "nama-rupa", "shadayatana", "sparsa", "vedana", "tanha", "upadana", "bhava", "jati", "jara-marana"],
+      "rule": "All 12 must be broken within a single lifetime (human realm only)",
+      "visibility": "Links become visible bottom-up; deep links (samskara, avidya) visible only after breaking tanha",
+      "weak_seams": "Links broken in past lives re-tie at birth but cost half to break again",
+      "break_costs_prajna": { "jara-marana": 2, "jati": 2, "bhava": 3, "upadana": 3, "tanha": 4, "vedana": 4, "sparsa": 5, "shadayatana": 5, "nama-rupa": 6, "vijnana": 7, "samskara": 8, "avidya": 10 },
+      "samskara_burn_budget": 15
+    },
+    "false_enlightenment": {
+      "summary": "Internal motivation validation; fake asceticism out of aversion disturbs the mind and sends the player to the Preta Realm",
+      "intention_roots": ["lobha (craving)", "dvesha (aversion)", "moha (delusion)", "pure (requires prajna >= 5)"],
+      "asceticism_from_aversion": "+disturbance; disturbance >= 3 -> mental disturbance -> death -> Preta",
+      "generosity_from_craving": "+punya, +0 prajna, increments merit-craving counter (accelerates Deva entry)"
+    },
+    "the_middle_way": {
+      "scale": [-5, 5],
+      "poles": "indulgence <-> mortification",
+      "prajna_multiplier": { "abs >= 2": 0.5, "abs == 1": 1.0, "zero": 1.5 },
+      "note": "Extremes give short-term bonuses; equanimity ('Buddha's smile' at zero) maximizes prajna"
+    },
+    "karmic_echo": {
+      "summary": "Samskaras from past lives set up an auto-pilot: auto-choices, accelerated timers, highlighted negative options",
+      "samskara_cards_per_life": [2, 4],
+      "autopilot_trigger_rate": 0.3,
+      "burn_cost_prajna": [2, 4],
+      "amplification_in_lower_realms": 2.0
+    }
+  },
+  "realms": {
+    "deva": { "entry_karma": ">= +24", "acts": 30, "prajna_gain": 0, "punya_burn": "1 per 2 acts", "prajna_decay": "1 per 6 acts", "trap": "aeons without progress, then fall" },
+    "asura": { "entry_karma": "+12..+23", "focus": "rivalry and envy", "papa_autogain": "1 per 3 acts unless released", "prajna_gain": "only through defeat" },
+    "manusha": { "entry_karma": "-11..+11", "focus": "full option set; only realm where nidanas can be broken", "prajna_gain": "primary source" },
+    "tiryak": { "entry_karma": "-24..-12", "options_per_act": 2, "samskara_multiplier": 2.0, "prajna_gain": "flashes of awareness at prajna >= 15" },
+    "preta": { "entry": "trigger: false asceticism / disturbance >= 3", "income_multiplier": 0.5, "craving_events_multiplier": 3.0 },
+    "naraka": { "entry_karma": "<= -25", "options_per_act": 2, "prajna_multiplier": 2.0, "papa_burn": "-2 per act (contested design, see open questions)" }
+  },
+  "bardo": {
+    "projections": ["fear (enemy/catastrophe of past life)", "desire (unfinished goal)", "attachment (beloved person)"],
+    "responses": ["follow (inertia)", "flee (inertia)", "contemplate (prajna >= 5)"],
+    "free_realm_choice": "after contemplating all three",
+    "liberation_attempt": { "weak_seams_min": 8, "prajna_min": 25 }
+  },
+  "endings": {
+    "moksha_hindu_vector": {
+      "summary": "Dissolution into the Absolute / Brahma realm; temporary high-tier state lasting aeons before resetting into Samsara",
+      "requirements": { "prajna": 30, "punya": 30 },
+      "persistent_bonus": "Memory of the Heights (+1 prajna at start of subsequent lives)"
+    },
+    "nirvana_buddhist_vector": {
+      "summary": "Realization of anatman; extinguishing of craving; complete silence, true escape without traditional win metrics",
+      "requirement": "break avidya within a human life",
+      "post_credits": "option to watch the wheel keep turning without the player"
+    },
+    "bodhisattva_hidden": {
+      "summary": "Conscious refusal of available Nirvana; return for the sake of others",
+      "requirement": "6 vows (lives where prajna was spent on others' suffering instead of one's own breaking)"
+    }
+  },
+  "meta_progression": ["prajna (persistent resource)", "dharma codex (knowledge unlocks)", "samskara deck (dark progression to cleanse)", "life journal (chronicle of all lives)"],
+  "economy_targets": {
+    "karma_thresholds": { "deva": 24, "asura": 12, "human": [-11, 11], "tiryak": [-24, -12], "naraka": -25 },
+    "typical_act_swing": [1, 3],
+    "prajna_per_conscious_human_life": [3, 6],
+    "total_break_cost_prajna": 59,
+    "lives_to_nirvana": [10, 14],
+    "run_hours": [1.5, 2.5],
+    "rng_policy": "deck-based with pity: guaranteed suffering at most once per N acts, at least once per life"
+  },
+  "open_questions": [
+    "Should intention roots (lobha/dvesha/moha) be shown before the choice, or only in bardo/codex?",
+    "Naraka as purifying fire (papa burn) is elegant but theologically contested; needs consultation",
+    "Real toponyms (Magadha, Rajagriha) vs fictional analogue",
+    "Should punya/papa numbers be visible (readability) or hidden (emergence)?",
+    "Deva aeons: stretched acts or compressed timelapse?"
+  ],
+  "roadmap": [
+    { "milestone": "M0", "duration": "1 week", "scope": "paper balance prototype; scripted life simulation; economy calibration" },
+    { "milestone": "M1", "duration": "2-3 weeks", "scope": "playable: human life, resources, death, rebirth (Human/Animal/Deva)" },
+    { "milestone": "M2", "duration": "3 weeks", "scope": "bardo, samskaras, intention system, Preta trigger" },
+    { "milestone": "M3", "duration": "3 weeks", "scope": "12 nidanas, dharma codex, both endings + bodhisattva" },
+    { "milestone": "M4", "duration": "4 weeks", "scope": "content (60-80 events), all 6 realms, audio, polish, RU/EN localization" }
+  ],
+  "tech_sketch": "Browser, no backend: TypeScript + (Svelte|React) or Ink-like text engine; events as JSON; localStorage saves; offline-friendly; Vite build"
+}
